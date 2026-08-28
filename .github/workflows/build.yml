@@ -1,0 +1,33 @@
+name: بناء APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: تحميل المستودع
+        uses: actions/checkout@v4
+
+      - name: فك ملف المشروع
+        run: unzip -q UEFA-Agent-Build.zip -d project
+
+      - name: إعداد Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: بناء التطبيق
+        run: |
+          cd project
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: إخراج APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: UEFA-Agent-APK
+          path: project/**/build/outputs/apk/debug/*.apk 1
